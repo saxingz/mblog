@@ -245,6 +245,14 @@
 			</properties>
 		</profile>
 
+		<!--生产环境-->
+		<profile>
+			<id>pro</id>
+			<properties>
+				<profileActive>pro</profileActive>
+			</properties>
+		</profile>
+
 		<!--测试环境-->
 		<profile>
 			<id>h2</id>
