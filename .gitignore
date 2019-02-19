@@ -21,3 +21,4 @@ rebel.xml
 
 *.db
 
+/post/
