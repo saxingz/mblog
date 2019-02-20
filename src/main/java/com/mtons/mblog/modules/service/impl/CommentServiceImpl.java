@@ -15,10 +15,11 @@ import com.mtons.mblog.modules.data.UserVO;
 import com.mtons.mblog.modules.entity.Comment;
 import com.mtons.mblog.modules.repository.CommentRepository;
 import com.mtons.mblog.modules.service.CommentService;
+import com.mtons.mblog.modules.service.PostService;
 import com.mtons.mblog.modules.service.UserEventService;
 import com.mtons.mblog.modules.service.UserService;
 import com.mtons.mblog.modules.utils.BeanMapUtils;
-import com.mtons.mblog.modules.service.PostService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -118,6 +119,28 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
+	public List<Comment> findAllByAuthorIdAndToId(long authorId, long toId) {
+		return commentRepository.findAllByAuthorIdAndToIdOrderByCreatedDesc(authorId, toId);
+	}
+
+	@Override
+	public List<CommentVO> findLatests(int maxResults) {
+		Pageable pageable = PageRequest.of(0, maxResults, new Sort(Sort.Direction.DESC, "id"));
+		Page<Comment> page = commentRepository.findAll(pageable);
+		List<CommentVO> rets = new ArrayList<>();
+
+		HashSet<Long> uids= new HashSet<>();
+
+		page.getContent().forEach(po -> {
+			uids.add(po.getAuthorId());
+			rets.add(BeanMapUtils.copy(po));
+		});
+
+		buildUsers(rets, uids);
+		return rets;
+	}
+
+	@Override
 	public Map<Long, CommentVO> findByIds(Set<Long> ids) {
 		List<Comment> list = commentRepository.findAllById(ids);
 		Map<Long, CommentVO> ret = new HashMap<>();
@@ -144,19 +167,19 @@ public class CommentServiceImpl implements CommentService {
 		po.setPid(comment.getPid());
 		commentRepository.save(po);
 
-		userEventService.identityComment(comment.getAuthorId(), po.getId(), true);
+		userEventService.identityComment(comment.getAuthorId(), true);
 		return po.getId();
 	}
 
 	@Override
 	@Transactional
 	public void delete(List<Long> ids) {
-		List<Comment> list = commentRepository.findAllById(ids);
-		commentRepository.deleteAllByIdIn(ids);
-
-		list.forEach(po -> {
-			userEventService.identityComment(po.getAuthorId(), po.getId(), false);
-		});
+		List<Comment> list = commentRepository.removeByIdIn(ids);
+		if (CollectionUtils.isNotEmpty(list)) {
+			list.forEach(po -> {
+				userEventService.identityComment(po.getAuthorId(), false);
+			});
+		}
 	}
 
 	@Override
@@ -169,31 +192,19 @@ public class CommentServiceImpl implements CommentService {
 			Assert.isTrue(po.getAuthorId() == authorId, "认证失败");
 			commentRepository.deleteById(id);
 
-			userEventService.identityComment(authorId, po.getId(), false);
+			userEventService.identityComment(authorId, false);
 		}
 	}
 
 	@Override
 	@Transactional
-	public List<Comment> findAllByAuthorIdAndToId(long authorId, long toId) {
-		return commentRepository.findAllByAuthorIdAndToIdOrderByCreatedDesc(authorId, toId);
-	}
-
-	@Override
-	public List<CommentVO> findLatests(int maxResults) {
-		Pageable pageable = PageRequest.of(0, maxResults, new Sort(Sort.Direction.DESC, "id"));
-		Page<Comment> page = commentRepository.findAll(pageable);
-		List<CommentVO> rets = new ArrayList<>();
-
-		HashSet<Long> uids= new HashSet<>();
-
-		page.getContent().forEach(po -> {
-			uids.add(po.getAuthorId());
-			rets.add(BeanMapUtils.copy(po));
-		});
-
-		buildUsers(rets, uids);
-		return rets;
+	public void deleteByPostId(long postId) {
+		List<Comment> list = commentRepository.removeByToId(postId);
+		if (CollectionUtils.isNotEmpty(list)) {
+			Set<Long> userIds = new HashSet<>();
+			list.forEach(n -> userIds.add(n.getAuthorId()));
+			userEventService.identityComment(userIds, false);
+		}
 	}
 
 	@Override
