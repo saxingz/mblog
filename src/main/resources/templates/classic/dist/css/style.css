@@ -83,7 +83,7 @@ abbr[data-original-title], abbr[title] {
 }
 
 .meta a, .operate a {
-    padding: 0 5px;
+    padding: 5px;
     color: #888;
     text-decoration: none;
 }
@@ -668,11 +668,11 @@ abbr[data-original-title], abbr[title] {
 
 .content-box {
     overflow: hidden;
-    padding: 22px 18px;
+    padding: 15px;
 }
 
 .posts-default .content-box {
-    padding: 22px 18px;
+    padding: 15px;
 }
 
 .posts-default-img {
@@ -824,7 +824,7 @@ abbr[data-original-title], abbr[title] {
 }
 
 .posts-gallery-info {
-    bottom: 28px;
+    bottom: 18px;
     position: absolute
 }
 
@@ -1032,6 +1032,54 @@ abbr[data-original-title], abbr[title] {
     text-decoration: none;
 }
 
+/* Tag
+-------------------------------------------------- */
+.streams-tags {
+    padding-top: 30px;
+}
+.streams-tags .row-item {
+    margin-bottom: 15px;
+}
+.streams-tags .title {
+    font-size: 18px;
+    margin-top: 0;
+}
+.streams-tags .title i {
+    color: #d2d2d2;
+}
+.streams-tags .title .label {
+    margin-left: 5px;
+}
+
+.streams-tags .media {
+    background: #f6f6f6;
+    padding: 10px;
+    border-radius: 5px;
+}
+.streams-tags .avatar {
+    padding: 0;
+}
+.streams-tags .avatar img{
+    width: 100%;
+    width: 42px;
+    height: 42px;
+    border-radius: 25px;
+}
+
+.streams-tags .media-body, .streams-tags .media-left, .streams-tags .media-right {
+    vertical-align: middle;
+}
+.streams-tags .media-heading {
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+}
+.streams-tags .media-heading a {
+    color: #999;
+}
 /* Detail
 -------------------------------------------------- */
 .topic {
@@ -1203,83 +1251,6 @@ abbr[data-original-title], abbr[title] {
 .vote-box .btn-primary.active {
     background-color: #05c1b8;
     border-color: #15cfc7;
-}
-
-.replies-index.replies {
-    position: relative;
-}
-
-.replies-index.replies .order-links {
-    position: absolute;
-    top: 11px;
-    right: 11px;
-}
-
-.replies-index.replies .order-links .btn-sm {
-    margin-left: 2px;
-}
-
-.replies-index.replies .order-links .btn-default {
-    color: #b7b7b7;
-    background-color: #fff;
-    border-color: #dcdada;
-}
-
-.replies-index.replies .order-links .btn-default.active {
-    color: #b7b7b7;
-    background-color: #fbfbfb;
-    border-color: #e4e4e4;
-}
-
-.replies-index .operate a {
-    color: #d0d0d0;
-    display: inline-block;
-}
-
-.replies-index .markdown-reply {
-    display: block;
-    width: 100%;
-}
-
-.replies-index .list-group-item.media {
-    padding-bottom: 6px;
-}
-
-.replies-index .list-group-item.media {
-    padding-bottom: 10px;
-}
-
-.replies-index .list-group-item.media .infos, div.replies-index .list-group-item.media .avatar img {
-    margin-top: 6px;
-}
-
-.replies .list-group-item.media .infos {
-    margin-left: 90px;
-}
-
-.replies .avatar-container {
-    text-align: center;
-    width: 80px;
-}
-
-.replies .label.role {
-    padding: .1em .2em .1em;
-    position: inherit;
-    color: #949090;
-    border: 1px solid #e0e0e0;
-    font-weight: normal;
-    display: inline-block;
-    margin: 8px 0;
-    background: transparent;
-}
-
-.replies .media-object.avatar {
-    display: inline-block;
-}
-
-.reply-post-submit .help-inline {
-    margin-left: 10px;
-    font-size: 0.9em;
 }
 
 .users-show .list-group .list-group-item {
@@ -1624,11 +1595,11 @@ abbr[data-original-title], abbr[title] {
     font-size: 16px;
 }
 
-.chats .chat_other {
+.chats .chat_header {
     border-bottom: 1px solid #f0f0f0;
 }
 
-.chats .chat_other h4 {
+.chats .chat_header h4 {
     margin: 0;
     padding: 15px 10px;
 }
@@ -1687,8 +1658,7 @@ abbr[data-original-title], abbr[title] {
 }
 
 .chats .reply_this a {
-    color: #ff8a00;
-    font-size: 12px;
+    font-size: 14px;
     height: 20px;
     cursor: pointer;
 }
@@ -1700,29 +1670,29 @@ abbr[data-original-title], abbr[title] {
 .chats .chat_reply {
 }
 
-.cbox-wrap {
+.chat_post {
     padding: 15px;
 }
 
-.cbox-wrap .cbox-title {
+.chat_post .cbox-title {
     margin-bottom: 10px;
     font-weight: 500;
 }
 
-.cbox-wrap .cbox-post {
+.chat_post .cbox-post {
 
 }
 
-.cbox-wrap .cbox-post a {
+.chat_post .cbox-post a {
     color: #9c9c9c
 }
 
-.cbox-wrap .cbox-input {
+.chat_post .cbox-input {
     border: 1px solid #e5e5e5;
     border-radius: 2px;
 }
 
-.cbox-wrap .cbox-input textarea {
+.chat_post .cbox-input textarea {
     border-style: none;
     border-radius: 2px;
     display: block;
@@ -1736,29 +1706,29 @@ abbr[data-original-title], abbr[title] {
     resize: none;
 }
 
-.cbox-wrap .fa-2 {
+.chat_post .fa-2 {
     font-size: 1.7em;
 }
 
-.cbox-wrap .cbox-ats {
+.chat_post .cbox-ats {
     padding: 0;
     margin-top: 10px;
     display: block;
 }
 
-.cbox-wrap .ats-func {
+.chat_post .ats-func {
     float: left;
 }
 
-.cbox-wrap .OwO-logo:hover {
+.chat_post .OwO-logo:hover {
     color: #ff8a00!important;
 }
 
-.cbox-wrap .ats-issue {
+.chat_post .ats-issue {
     float: right;
 }
 
-.cbox-wrap .ats-issue .btn {
+.chat_post .ats-issue .btn {
     border-radius: 2px;
     padding: 5px 16px;
 }
@@ -1923,7 +1893,7 @@ div.mce-toolbar-grp {
     .posts-default .content-box,
     .posts-image-box,
     .posts-gallery-box {
-        padding: 12px 12px;
+        padding: 12px;
     }
 
     .posts-default-box {
@@ -2019,11 +1989,10 @@ div.mce-toolbar-grp {
     }
 
     .posts-gallery-content .posts-gallery-text {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        min-height: 42px;
         margin-bottom: 5px;
-        display: none
+        -webkit-line-clamp: 2;
+        display: -webkit-box;
     }
 
     .post-style-tips {
