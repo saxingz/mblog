@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,30 +32,34 @@ public class EmailController extends BaseController {
     @Autowired
     private SecurityCodeService securityCodeService;
 
+    private static final String EMAIL_TITLE = "[{0}]您正在使用邮箱安全验证服务";
+
     @GetMapping("/send_code")
     @ResponseBody
     public Result sendCode(String email, Integer type) {
         Assert.hasLength(email, "请输入邮箱地址");
         Assert.notNull(type, "缺少必要的参数");
 
-        long userId;
+        String key;
 
         if (Consts.CODE_FORGOT == type) {
             UserVO user = userService.getByEmail(email);
             Assert.notNull(user, "账户不存在");
-            userId = user.getId();
+            key = String.valueOf(user.getId());
+        } else if (Consts.CODE_REG == type) {
+            key = email;
         } else {
             AccountProfile profile = getProfile();
             Assert.notNull(profile, "请先登录后再进行此操作");
-            userId = profile.getId();
+            key = String.valueOf(profile.getId());
         }
 
-        String code = securityCodeService.generateCode(userId, type, email);
+        String code = securityCodeService.generateCode(key, type, email);
         Map<String, Object> context = new HashMap<>();
         context.put("code", code);
 
-        String siteName = siteOptions.getValue("site_name");
-        mailService.sendTemplateEmail(email, siteName + " - 验证邮箱", Consts.EMAIL_TEMPLATE_CODE, context);
+        String title = MessageFormat.format(EMAIL_TITLE, siteOptions.getValue("site_name"));
+        mailService.sendTemplateEmail(email, title, Consts.EMAIL_TEMPLATE_CODE, context);
         return Result.successMessage("邮件发送成功");
     }
 
