@@ -29,13 +29,13 @@
             <div class="panel-footer operate">
                 <#list view.tagsArray as tag>
                     <span>
-                            <a class="label label-default" href="${base}/tag/${tag}/">#${tag}</a>
-                        </span>
+                        <a class="label label-default" href="${base}/tag/${tag}/">#${tag}</a>
+                    </span>
                 </#list>
             </div>
-            <div class="panel-footer operate">
+            <div class="panel-footer">
                 <div class="hidden-xs">
-                    <div class="social-share" data-sites="weibo, wechat, facebook, twitter, google, qzone, qq"></div>
+                    <div class="social-share" data-sites="qq, weibo, wechat, qzone, facebook, twitter, google"></div>
                 </div>
                 <div class="clearfix"></div>
             </div>

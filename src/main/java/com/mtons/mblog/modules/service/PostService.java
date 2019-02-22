@@ -9,6 +9,7 @@
 */
 package com.mtons.mblog.modules.service;
 
+import com.mtons.mblog.base.lang.Consts;
 import com.mtons.mblog.modules.data.PostVO;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -26,7 +27,7 @@ import java.util.Set;
  * @author langhsu
  *
  */
-@CacheConfig(cacheNames = "postCaches")
+@CacheConfig(cacheNames = Consts.CACHE_USER)
 public interface PostService {
 	/**
 	 * 分页查询所有文章
@@ -38,7 +39,7 @@ public interface PostService {
 	@Cacheable
 	Page<PostVO> paging(Pageable pageable, int channelId, Set<Integer> excludeChannelIds, String ord);
 
-	Page<PostVO> paging4Admin(Pageable pageable, long id, String title, int channelId);
+	Page<PostVO> paging4Admin(Pageable pageable, int channelId, String title);
 	
 	/**
 	 * 查询个人发布文章
@@ -51,20 +52,18 @@ public interface PostService {
 	/**
 	 * 查询最近更新 - 按发布时间排序
 	 * @param maxResults
-	 * @param ignoreUserId
 	 * @return
 	 */
 	@Cacheable
-	List<PostVO> findLatests(int maxResults, long ignoreUserId);
+	List<PostVO> findLatests(int maxResults);
 
 	/**
 	 * 查询热门文章 - 按浏览次数排序
 	 * @param maxResults
-	 * @param ignoreUserId
 	 * @return
 	 */
 	@Cacheable
-	List<PostVO> findHottests(int maxResults, long ignoreUserId);
+	List<PostVO> findHottests(int maxResults);
 	
 	/**
 	 * 根据Ids查询
@@ -106,10 +105,10 @@ public interface PostService {
 	/**
 	 * 置顶
 	 * @param id
-	 * @param weight 0: 取消, 1: 置顶
+	 * @param weighted 0: 取消, 1: 置顶
 	 */
 	@CacheEvict(allEntries = true)
-	void updateWeight(long id, int weight);
+	void updateWeight(long id, int weighted);
 	
 	/**
 	 * 带作者验证的删除 - 验证是否属于自己的文章
@@ -131,12 +130,14 @@ public interface PostService {
 	 * 自增浏览数
 	 * @param id
 	 */
+	@CacheEvict(key = "'view_' + #id")
 	void identityViews(long id);
 	
 	/**
 	 * 自增评论数
 	 * @param id
 	 */
+	@CacheEvict(key = "'view_' + #id")
 	void identityComments(long id);
 
 	/**

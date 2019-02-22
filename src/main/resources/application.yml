@@ -1,5 +1,11 @@
 server:
     port: 8080
+    use-forward-headers: true
+    undertow:
+        io-threads: 2
+        worker-threads: 32
+        buffer-size: 1024
+        directBuffers: true
 spring:
     profiles:
         active: @profileActive@
@@ -51,8 +57,13 @@ site:
     version: 3.2.0
     location: ${user.dir}
     controls:
+        # 注册开关
         register: true
+        # 注册开启邮箱验证
+        register_email_validate: false
+        # 发布文章开关
         post: true
+        # 评论开关
         comment: true
     options:
         theme: classic
