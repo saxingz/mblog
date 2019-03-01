@@ -9,7 +9,7 @@ import com.mtons.mblog.modules.repository.MessageRepository;
 import com.mtons.mblog.modules.data.UserVO;
 import com.mtons.mblog.modules.service.MessageService;
 import com.mtons.mblog.modules.service.UserService;
-import com.mtons.mblog.modules.utils.BeanMapUtils;
+import com.mtons.mblog.base.utils.BeanMapUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,9 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 /**
- * @author langhsu on 2015/8/31.
+ * @author langhsu
  */
 @Service
+@Transactional(readOnly = true)
 public class MessageServiceImpl implements MessageService {
     @Autowired
     private MessageRepository messageRepository;
@@ -33,9 +34,8 @@ public class MessageServiceImpl implements MessageService {
     private PostService postService;
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<MessageVO> pagingByOwnId(Pageable pageable, long ownId) {
-        Page<Message> page = messageRepository.findAllByOwnId(pageable, ownId);
+    public Page<MessageVO> pagingByUserId(Pageable pageable, long userId) {
+        Page<Message> page = messageRepository.findAllByUserId(pageable, userId);
         List<MessageVO> rets = new ArrayList<>();
 
         Set<Long> postIds = new HashSet<>();
@@ -74,27 +74,32 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
-    public void send(MessageVO notify) {
-        if (notify == null || notify.getOwnId() <=0 || notify.getFromId() <= 0) {
+    public void send(MessageVO message) {
+        if (message == null || message.getUserId() <=0 || message.getFromId() <= 0) {
             return;
         }
 
         Message po = new Message();
-        BeanUtils.copyProperties(notify, po);
+        BeanUtils.copyProperties(message, po);
         po.setCreated(new Date());
 
         messageRepository.save(po);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public int unread4Me(long ownId) {
-        return messageRepository.countByOwnIdAndStatus(ownId, Consts.UNREAD);
+    public int unread4Me(long userId) {
+        return messageRepository.countByUserIdAndStatus(userId, Consts.UNREAD);
     }
 
     @Override
     @Transactional
-    public void readed4Me(long ownId) {
-        messageRepository.updateReadedByOwnId(ownId);
+    public void readed4Me(long userId) {
+        messageRepository.updateReadedByUserId(userId);
+    }
+
+    @Override
+    @Transactional
+    public int deleteByPostId(long postId) {
+        return messageRepository.deleteByPostId(postId);
     }
 }
