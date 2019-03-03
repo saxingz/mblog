@@ -3,8 +3,8 @@
  */
 package com.mtons.mblog.modules.template.directive;
 
-import com.mtons.mblog.modules.data.PostVO;
-import com.mtons.mblog.modules.service.PostService;
+import com.mtons.mblog.modules.data.FavoriteVO;
+import com.mtons.mblog.modules.service.FavoriteService;
 import com.mtons.mblog.modules.template.DirectiveHandler;
 import com.mtons.mblog.modules.template.TemplateDirective;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,27 +13,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 /**
- * 根据作者取文章列表
+ * 根据作者取收藏列表
  *
- * @author langhsu
- *
+ * @author landy
+ * @since 3.0
  */
 @Component
-public class AuthorContentsDirective extends TemplateDirective {
+public class UserFavoritesDirective extends TemplateDirective {
     @Autowired
-	private PostService postService;
+	private FavoriteService favoriteService;
 
 	@Override
 	public String getName() {
-		return "author_contents";
+		return "user_favorites";
 	}
 
     @Override
     public void execute(DirectiveHandler handler) throws Exception {
         long userId = handler.getInteger("userId", 0);
-        Pageable pageable = wrapPageable(handler, "id");
+        Pageable pageable = wrapPageable(handler);
 
-        Page<PostVO> result = postService.pagingByAuthorId(pageable, userId);
+        Page<FavoriteVO> result = favoriteService.pagingByUserId(pageable, userId);
         handler.put(RESULTS, result).render();
     }
 

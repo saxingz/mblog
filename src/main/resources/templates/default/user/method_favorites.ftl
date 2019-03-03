@@ -1,4 +1,4 @@
-<#include "/default/utils/ui.ftl"/>
+<#include "/default/inc/layout.ftl"/>
 
 <@layout user.name +  "的收藏">
 <div class="row users-show">
@@ -8,13 +8,14 @@
     <div class="col-xs-12 col-md-9 side-right">
         <div class="panel panel-default">
             <div class="panel-heading">收藏的文章</div>
-            <@author_favorites userId=user.id pageNo=pageNo>
+            <@user_favorites userId=user.id pageNo=pageNo>
                 <div class="panel-body">
                     <ul class="list-group">
                         <#list results.content as row>
+                            <#assign target = row.post />
                             <li class="list-group-item" id="loop-${target.id}">
-                                <#if row.post??>
-                                    <a href="${base}/post/${row.post.id}" class="remove-padding-left">${row.post.title}</a>
+                                <#if target??>
+                                    <a href="${base}/post/${target.id}" class="remove-padding-left">${target.title}</a>
                                 <#else>
                                     <a href="javascript:;" class="remove-padding-left">文章已删除</a>
                                 </#if>
@@ -42,9 +43,9 @@
                     </ul>
                 </div>
                 <div class="panel-footer">
-                    <@pager request.requestURI!'', results, 5/>
+                    <@utils.pager request.requestURI!'', results, 5/>
                 </div>
-            </@author_favorites>
+            </@user_favorites>
         </div>
     </div>
 </div>

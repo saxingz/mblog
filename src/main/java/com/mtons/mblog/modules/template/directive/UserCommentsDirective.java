@@ -19,19 +19,19 @@ import org.springframework.stereotype.Component;
  * @since 3.0
  */
 @Component
-public class AuthorCommentsDirective extends TemplateDirective {
+public class UserCommentsDirective extends TemplateDirective {
     @Autowired
 	private CommentService commentService;
 
 	@Override
 	public String getName() {
-		return "author_comments";
+		return "user_comments";
 	}
 
     @Override
     public void execute(DirectiveHandler handler) throws Exception {
         long userId = handler.getInteger("userId", 0);
-        Pageable pageable = wrapPageable(handler, "id");
+        Pageable pageable = wrapPageable(handler);
 
         Page<CommentVO> result = commentService.pagingByAuthorId(pageable, userId);
         handler.put(RESULTS, result).render();

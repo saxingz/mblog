@@ -9,133 +9,68 @@
 */
 package com.mtons.mblog.base.lang;
 
+import lombok.Data;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
+ * 消息对象
  * @author langhsu
  */
-public class Result implements Serializable {
+@Data
+public class Result<T> implements Serializable {
     private static final long serialVersionUID = -1491499610244557029L;
 
-    public static int SUCCESS = 0;
-    public static int FAILURED = -1;
+    public static final int SUCCESS = 0;
+    public static final int ERROR = -1;
 
-    private int code; // 处理状态：0: 成功
+    /**
+     * 状态码 0: success, -1: error
+     */
+    private int code;
+
+    /**
+     * 提示消息
+     */
     private String message;
-    private Object data; // 返回数据
-    private ArrayList<Button> links = new ArrayList<>();
 
-    private Result(int code, String message) {
-        this(code, message, null);
-    }
+    /**
+     * 结果数据
+     */
+    private T data;
 
-    private Result(int code, String message, Object data) {
+    public Result(int code, String message, T data) {
         this.code = code;
         this.message = message;
         this.data = data;
     }
 
-    public static Result success() {
+    public static <T> Result<T> success() {
         return success(null);
     }
 
-    /**
-     * 处理成功，并返回数据
-     *
-     * @param data
-     * @return
-     */
-    public static Result success(Object data) {
+    public static <T> Result<T> success(T data) {
         return success("操作成功", data);
     }
 
-    public static Result successMessage(String message) {
+    public static <T> Result<T> successMessage(String message) {
         return success(message, null);
     }
 
-    public static Result success(String message, Object data) {
-        return new Result(Result.SUCCESS, message, data);
+    public static <T> Result<T> success(String message, T data) {
+        return new Result<>(Result.SUCCESS, message, data);
     }
 
-    public static Result failure(String message) {
-        return failure(Result.FAILURED, message);
+    public static <T> Result<T> failure(String message) {
+        return failure(Result.ERROR, message);
     }
 
-    /**
-     * 处理失败，并返回数据（一般为错误信息）
-     *
-     * @param code
-     * @return
-     */
-    public static Result failure(int code, String message) {
-        return new Result(code, message, null);
+    public static <T> Result<T> failure(int code, String message) {
+        return new Result<>(code, message, null);
     }
 
-    public int getCode() {
-        return code;
+    public boolean isOk() {
+        return code == SUCCESS;
     }
 
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
-    }
-
-    public Result addLink(String link, String text) {
-        links.add(new Button(link, text));
-        return this;
-    }
-
-    public ArrayList<Button> getLinks() {
-        return links;
-    }
-
-    public void setLinks(ArrayList<Button> links) {
-        this.links = links;
-    }
-
-    public String toString() {
-        return "{code:\"" + code + "\", message:\"" + message + "\", data:\"" + (data != null ? data.toString() : "") + "\"}";
-    }
-
-    public class Button {
-        private String text;
-        private String link;
-
-        public Button(String link, String text) {
-            this.link = link;
-            this.text = text;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public void setText(String text) {
-            this.text = text;
-        }
-
-        public String getLink() {
-            return link;
-        }
-
-        public void setLink(String link) {
-            this.link = link;
-        }
-    }
 }

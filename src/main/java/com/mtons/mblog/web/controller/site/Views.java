@@ -10,40 +10,108 @@
 package com.mtons.mblog.web.controller.site;
 
 /**
- * 
- * 返回页面配置
- * 
- * @author langhsu
+ * 主题页面配置
  *
+ * @author langhsu
  */
 public interface Views {
-	String LOGIN = "/auth/login";
-	String REGISTER = "/auth/register";
-	String REGISTER_RESULT = "/auth/result";
-	String OAUTH_REGISTER = "/auth/oauth_register";
+    /**
+     * 登录
+     */
+    String LOGIN = "/auth/login";
 
-	String FORGOT = "/auth/forgot";
+    /**
+     * 注册
+     */
+    String REGISTER = "/auth/register";
 
-	String INDEX = "/index";
+    /**
+     * 三方登录回调注册
+     */
+    String OAUTH_REGISTER = "/auth/oauth_register";
 
-	String USER_POSTS = "/user/method_posts";
-	String USER_COMMENTS = "/user/method_comments";
-	String USER_FAVORITES = "/user/method_favorites";
-	String USER_MESSAGES = "/user/method_messages";
+    /**
+     * 找回密码
+     */
+    String FORGOT = "/auth/forgot";
 
-	String REDIRECT_USER_HOME = "redirect:/users/%d";
+    /**
+     * 首页
+     */
+    String INDEX = "/index";
 
-	String SETTINGS_AVATAR = "/settings/avatar";
-	String SETTINGS_PASSWORD = "/settings/password";
-	String SETTINGS_PROFILE = "/settings/profile";
-	String SETTINGS_EMAIL = "/settings/email";
+    String USER_METHOD_TEMPLATE = "/user/method_%s";
 
-	String TAG_INDEX = "/tag/index";
-	String TAG_VIEW = "/tag/view";
+    /**
+     * 用户文章列表
+     */
+    String METHOD_POSTS = "posts";
 
-	String BROWSE_SEARCH = "/search";
+    /**
+     * 用户评论列表
+     */
+    String METHOD_COMMENTS = "comments";
 
-	String ROUTE_POST_EDITING = "/channel/editing";
-	String ROUTE_POST_INDEX = "/channel/index";
-	String ROUTE_POST_VIEW = "/channel/view";
+    /**
+     * 用户收藏列表
+     */
+    String METHOD_FAVORITES = "favorites";
+
+    /**
+     * 用户消息列表
+     */
+    String METHOD_MESSAGES = "messages";
+
+    /**
+     * 个人-修改头像
+     */
+    String SETTINGS_AVATAR = "/settings/avatar";
+
+    /**
+     * 个人-修改密码
+     */
+    String SETTINGS_PASSWORD = "/settings/password";
+
+    /**
+     * 个人-修改基本信息
+     */
+    String SETTINGS_PROFILE = "/settings/profile";
+
+    /**
+     * 个人-修改邮箱
+     */
+    String SETTINGS_EMAIL = "/settings/email";
+
+    /**
+     * 标签列表
+     */
+    String TAG_INDEX = "/tag/index";
+
+    /**
+     * 标签文章列表
+     */
+    String TAG_VIEW = "/tag/view";
+
+    /**
+     * 搜索
+     */
+    String SEARCH = "/search";
+
+    /**
+     * 编辑文章
+     */
+    String POST_EDITING = "/channel/editing";
+
+    /**
+     * 文章列表
+     */
+    String POST_INDEX = "/channel/index";
+
+    /**
+     * 文章详情
+     */
+    String POST_VIEW = "/channel/view";
+
+    String REDIRECT_USER_HOME = "redirect:/users/%d";
+    String REDIRECT_INDEX = "redirect:/index";
 }
