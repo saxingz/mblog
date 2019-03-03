@@ -17,8 +17,7 @@ public class BootApplication {
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(BootApplication.class, args);
         String serverPort = context.getEnvironment().getProperty("server.port");
-        String contextpath = context.getEnvironment().getProperty("server.servlet.context-path");
-        log.info("mblog started at http://localhost:" + serverPort + contextpath);
+        log.info("mblog started at http://localhost:" + serverPort);
     }
 
 }
