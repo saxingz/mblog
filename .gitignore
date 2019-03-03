@@ -22,3 +22,4 @@ rebel.xml
 *.db
 
 /post/
+!/src/main/java/com/mtons/mblog/base/storage/
