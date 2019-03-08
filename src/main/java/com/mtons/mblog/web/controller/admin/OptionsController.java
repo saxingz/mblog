@@ -10,8 +10,8 @@
 package com.mtons.mblog.web.controller.admin;
 
 import com.mtons.mblog.base.lang.Result;
+import com.mtons.mblog.base.utils.BlogUtils;
 import com.mtons.mblog.config.ContextStartup;
-import com.mtons.mblog.modules.entity.Options;
 import com.mtons.mblog.modules.service.OptionsService;
 import com.mtons.mblog.modules.service.PostSearchService;
 import com.mtons.mblog.web.controller.BaseController;
@@ -19,10 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,30 +42,14 @@ public class OptionsController extends BaseController {
 	private ContextStartup contextStartup;
 
 	@RequestMapping("/index")
-	public String list(ModelMap model) {
-		model.put("values", optionsService.findAll2Map());
+	public String index(ModelMap model) {
 		return "/admin/options/index";
 	}
 	
 	@RequestMapping("/update")
-	public String update(HttpServletRequest request, ModelMap model) {
-		Map<String, String[]> params = request.getParameterMap();
-
-		List<Options> options = new ArrayList<>();
-
-		params.forEach((k, v) -> {
-			Options conf = new Options();
-			conf.setKey(k);
-			conf.setValue(v[0]);
-
-			options.add(conf);
-		});
-
-		optionsService.update(options);
-
+	public String update(@RequestParam Map<String, String> body, ModelMap model) {
+		optionsService.update(body);
 		contextStartup.reloadOptions(false);
-
-		model.put("values", optionsService.findAll2Map());
 		model.put("data", Result.success());
 		return "/admin/options/index";
 	}

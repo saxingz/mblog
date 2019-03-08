@@ -146,7 +146,6 @@ public class SettingsController extends BaseController {
 
             result.ok(UploadController.errorInfo.get("SUCCESS"));
             result.setName(fileName);
-            result.setType(getSuffix(fileName));
             result.setPath(path);
             result.setSize(file.getSize());
         } catch (Exception e) {
@@ -155,7 +154,7 @@ public class SettingsController extends BaseController {
         return result;
     }
 
-    public String getAvaPath(long uid, int size) {
+    private String getAvaPath(long uid, int size) {
         String base = FilePathUtils.getAvatar(uid);
         return String.format("/%s_%d.jpg", base, size);
     }

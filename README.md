@@ -33,9 +33,17 @@
  IDE得装lombok插件
 ```
 
-- 更多文档及教程见 [http://mtons.com/dock/mblog](http://mtons.com/dock/mblog)
+- 文档: [说明文档](https://langhsu.github.io/mblog/#/)
+- 官网: [官网地址](http://www.mtons.com)
 - QQ交流群：378433412
 
+### 版本(3.2)更新内容：
+    1. 文件存储目录可配置, 见 site.location, 默认为 user.dir
+    2. 支持在${site.location}/storage/templates 目录下扩展自己的主题(${site.location}具体位置见启动日志)
+    3. 后台未配置对应第三方登录信息时, 前端不显示对应的按钮
+    4. 模板优化
+    5. 后台配置主题改为自动从目录中加载
+    
 ### 版本(3.0)更新内容：
     1. 新增开关控制(注册开关, 发文开关, 评论开发)
     2. 后台重写, 替换了所有后台页面功能更完善
@@ -53,9 +61,7 @@
     14. 邮件服务后台可配
     15. 新增标签页
     16. 新增注册邮箱验证开关(需要手动删除之前的 mto_security_code 表)
-    
-[官网地址](http://www.mtons.com)
-    
+        
 ### 图片演示 
 ![首页](https://images.gitee.com/uploads/images/2019/0125/142627_fcd67bfd_116277.jpeg "前台首页.jpg")
 ![文章](https://images.gitee.com/uploads/images/2019/0125/142647_328aa3d7_116277.jpeg "文章阅读.jpg")
@@ -66,4 +72,10 @@
 
 ### 这些用户在使用mblog(如需要在此展示您的博客请联系作者)：
 [https://www.lyp82nlf.com/](https://www.lyp82nlf.com/)
+
+[http://www.outshine.cn/](http://www.outshine.cn/)
+
+[http://www.jiangxindc.com](http://www.jiangxindc.com)
+
+[http://www.mhtclub.com/](http://www.mhtclub.com/)
 

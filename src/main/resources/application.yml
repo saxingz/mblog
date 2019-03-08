@@ -1,5 +1,11 @@
 server:
     port: 8080
+    use-forward-headers: true
+    undertow:
+        io-threads: 2
+        worker-threads: 32
+        buffer-size: 1024
+        directBuffers: true
 spring:
     profiles:
         active: @profileActive@
@@ -21,16 +27,22 @@ spring:
     freemarker:
         template-loader-path:
         - classpath:/templates
-        - file:./templates
+        - file:${site.location}/storage/templates
         cache: false
-        checkTemplateLocation: false
+        check-template-location: true
+        charset: utf-8
         settings:
             classic_compatible: true #处理空值
             template_exception_handler: rethrow
             template_update_delay: 0
             datetime_format: yyyy-MM-dd HH:mm
             number_format: 0.##
-
+            auto_import: /utils.ftl as utils
+    flyway:
+        enabled: false
+        baseline-on-migrate: true
+        encoding: UTF-8
+        locations: classpath:scripts/migration
 shiro:
     web:
         enabled: true
@@ -64,4 +76,5 @@ site:
         site_logo: /dist/images/logo/logo.png
         site_favicon: /dist/images/logo/m.png
         storage_max_width: 800
-        storeage_limit_size: 2
+        storeage_limit_size: 2,
+        editor: markdown

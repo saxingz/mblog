@@ -3,7 +3,7 @@ package com.mtons.mblog.modules.service.impl;
 import com.mtons.mblog.modules.data.FavoriteVO;
 import com.mtons.mblog.modules.data.PostVO;
 import com.mtons.mblog.modules.repository.FavoriteRepository;
-import com.mtons.mblog.modules.utils.BeanMapUtils;
+import com.mtons.mblog.base.utils.BeanMapUtils;
 import com.mtons.mblog.modules.entity.Favorite;
 import com.mtons.mblog.modules.service.FavoriteService;
 import com.mtons.mblog.modules.service.PostService;
@@ -31,8 +31,8 @@ public class FavoriteServiceImpl implements FavoriteService {
     private PostService postService;
 
     @Override
-    public Page<FavoriteVO> pagingByOwnId(Pageable pageable, long ownId) {
-        Page<Favorite> page = favoriteRepository.findAllByOwnId(pageable, ownId);
+    public Page<FavoriteVO> pagingByUserId(Pageable pageable, long userId) {
+        Page<Favorite> page = favoriteRepository.findAllByUserId(pageable, userId);
 
         List<FavoriteVO> rets = new ArrayList<>();
         Set<Long> postIds = new HashSet<>();
@@ -55,13 +55,13 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     @Transactional
     public void add(long userId, long postId) {
-        Favorite po = favoriteRepository.findByOwnIdAndPostId(userId, postId);
+        Favorite po = favoriteRepository.findByUserIdAndPostId(userId, postId);
 
         Assert.isNull(po, "您已经收藏过此文章");
 
         // 如果没有喜欢过, 则添加记录
         po = new Favorite();
-        po.setOwnId(userId);
+        po.setUserId(userId);
         po.setPostId(postId);
         po.setCreated(new Date());
 
@@ -71,7 +71,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     @Transactional
     public void delete(long userId, long postId) {
-        Favorite po = favoriteRepository.findByOwnIdAndPostId(userId, postId);
+        Favorite po = favoriteRepository.findByUserIdAndPostId(userId, postId);
         Assert.notNull(po, "还没有喜欢过此文章");
         favoriteRepository.delete(po);
     }

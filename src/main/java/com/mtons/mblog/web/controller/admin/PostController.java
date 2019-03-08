@@ -16,6 +16,7 @@ import com.mtons.mblog.modules.data.PostVO;
 import com.mtons.mblog.modules.service.ChannelService;
 import com.mtons.mblog.modules.service.PostService;
 import com.mtons.mblog.web.controller.BaseController;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,14 +46,15 @@ public class PostController extends BaseController {
 	@RequestMapping("/list")
 	public String list(String title, ModelMap model, HttpServletRequest request) {
 		long id = ServletRequestUtils.getLongParameter(request, "id", Consts.ZERO);
-		int group = ServletRequestUtils.getIntParameter(request, "group", Consts.ZERO);
+		int channelId = ServletRequestUtils.getIntParameter(request, "channelId", Consts.ZERO);
 
 		Pageable pageable = wrapPageable();
-		Page<PostVO> page = postService.paging4Admin(pageable, id, title, group);
+		Page<PostVO> page = postService.paging4Admin(pageable, channelId, title);
 		model.put("page", page);
 		model.put("title", title);
 		model.put("id", id);
-		model.put("group", group);
+		model.put("channelId", channelId);
+		model.put("channels", channelService.findAll(Consts.IGNORE));
 		return "/admin/post/list";
 	}
 	
@@ -64,12 +66,17 @@ public class PostController extends BaseController {
 	 */
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
 	public String toUpdate(Long id, ModelMap model) {
+		String editor = siteOptions.getValue("editor");
 		if (null != id && id > 0) {
-			PostVO ret = postService.get(id);
-			model.put("view", ret);
+			PostVO view = postService.get(id);
+			if (StringUtils.isNoneBlank(view.getEditor())) {
+				editor = view.getEditor();
+			}
+			model.put("view", view);
 		}
-		model.put("groups", channelService.findAll(Consts.IGNORE));
-		return "/admin/post/update";
+		model.put("editor", editor);
+		model.put("channels", channelService.findAll(Consts.IGNORE));
+		return "/admin/post/view";
 	}
 	
 	/**
@@ -78,7 +85,7 @@ public class PostController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String subUpdate(PostVO post) throws Exception {
+	public String subUpdate(PostVO post) {
 		if (post != null) {
 			if (post.getId() > 0) {
 				postService.update(post);

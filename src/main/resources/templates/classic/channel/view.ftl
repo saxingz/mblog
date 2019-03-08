@@ -1,4 +1,4 @@
-<#include "/classic/utils/ui.ftl"/>
+<#include "/classic/inc/layout.ftl"/>
 
 <#assign title = view.title + ' - ' + options['site_name'] />
 <#assign keywords = view.keywords?default(options['site_keywords']) />
@@ -29,13 +29,13 @@
             <div class="panel-footer operate">
                 <#list view.tagsArray as tag>
                     <span>
-                            <a class="label label-default" href="${base}/tag/${tag}/">#${tag}</a>
-                        </span>
+                        <a class="label label-default" href="${base}/tag/${tag}/">#${tag}</a>
+                    </span>
                 </#list>
             </div>
-            <div class="panel-footer operate">
+            <div class="panel-footer">
                 <div class="hidden-xs">
-                    <div class="social-share" data-sites="weibo, wechat, facebook, twitter, google, qzone, qq"></div>
+                    <div class="social-share" data-sites="qq, weibo, wechat, qzone, facebook, twitter, google"></div>
                 </div>
                 <div class="clearfix"></div>
             </div>
@@ -84,9 +84,7 @@
         <ul class="list-group about-user">
             <li class="list-group-item user-card" >
                 <div class="user-avatar">
-                    <a href="${base}/users/${view.author.id}">
-                        <@showAva view.author.avatar "img-circle"/>
-                    </a>
+                    <@utils.showAva view.author "img-circle"/>
                 </div>
                 <div class="user-name">
                     <span>${view.author.name}</span>

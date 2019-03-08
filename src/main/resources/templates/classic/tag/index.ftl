@@ -1,4 +1,4 @@
-<#include "/classic/utils/ui.ftl"/>
+<#include "/classic/inc/layout.ftl"/>
 <@layout "标签列表">
     <div class="row">
         <div class="col-xs-12 col-md-9 side-left">
@@ -14,9 +14,7 @@
                             <#if post??>
                                 <div class="media">
                                     <div class="media-left">
-                                        <a class="avatar" href="${base}/users/${post.author.id}">
-                                            <img class="media-object" src="<@resource src=post.author.avatar + '?t=' + .now?time/>">
-                                        </a>
+                                        <@utils.showAva post.author "media-object"/>
                                     </div>
                                     <div class="media-body">
                                         <h4 class="media-heading">
@@ -27,19 +25,17 @@
                             </#if>
                         </div>
                     </#list>
-                    <#if  results.content?size == 0>
-                    <li class="ajax-load-con content">
-                        <div class="content-box posts-aside">
-                            <div class="posts-default-content">该目录下还没有内容!</div>
+                    <#if results.content?size == 0>
+                        <div class="infos">
+                            <div class="media-heading">该目录下还没有内容!</div>
                         </div>
-                    </li>
                     </#if>
                 </div>
             </div>
 
             <!-- Pager -->
             <div class="text-center">
-                <@pager request.requestURI!"", results, 5/>
+                <@utils.pager request.requestURI!"", results, 5/>
             </div>
         </div>
 

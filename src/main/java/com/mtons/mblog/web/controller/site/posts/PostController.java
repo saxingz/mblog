@@ -3,8 +3,8 @@
  */
 package com.mtons.mblog.web.controller.site.posts;
 
-import com.mtons.mblog.base.lang.Result;
 import com.mtons.mblog.base.lang.Consts;
+import com.mtons.mblog.base.lang.Result;
 import com.mtons.mblog.modules.data.AccountProfile;
 import com.mtons.mblog.modules.data.PostVO;
 import com.mtons.mblog.modules.service.ChannelService;
@@ -17,8 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 /**
  * 文章操作
@@ -41,6 +39,7 @@ public class PostController extends BaseController {
 	public String view(Long id, ModelMap model) {
 		model.put("channels", channelService.findAll(Consts.STATUS_NORMAL));
 		model.put("editing", true);
+		String editor = siteOptions.getValue("editor");
 		if (null != id && id > 0) {
 			AccountProfile profile = getProfile();
 			PostVO view = postService.get(id);
@@ -50,10 +49,13 @@ public class PostController extends BaseController {
 
 			Assert.isTrue(view.getChannel().getStatus() == Consts.STATUS_NORMAL, "请在后台编辑此文章");
 			model.put("view", view);
-		}
 
-		model.put("channels", channelService.findAll(Consts.STATUS_NORMAL));
-		return view(Views.ROUTE_POST_EDITING);
+			if (StringUtils.isNoneBlank(view.getEditor())) {
+				editor = view.getEditor();
+			}
+		}
+		model.put("editor", editor);
+		return view(Views.POST_EDITING);
 	}
 
 	/**
@@ -62,7 +64,7 @@ public class PostController extends BaseController {
 	 * @return
 	 */
 	@PostMapping("/submit")
-	public String post(PostVO post) throws IOException {
+	public String post(PostVO post) {
 		Assert.notNull(post, "参数不完整");
 		Assert.state(StringUtils.isNotBlank(post.getTitle()), "标题不能为空");
 		Assert.state(StringUtils.isNotBlank(post.getContent()), "内容不能为空");
@@ -89,17 +91,14 @@ public class PostController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/delete/{id}")
-	public @ResponseBody
-	Result delete(@PathVariable Long id) {
-		Result data = Result.failure("操作失败");
-		if (id != null) {
-			AccountProfile up = getProfile();
-			try {
-				postService.delete(id, up.getId());
-				data = Result.success();
-			} catch (Exception e) {
-				data = Result.failure(e.getMessage());
-			}
+	@ResponseBody
+	public Result delete(@PathVariable Long id) {
+		Result data;
+		try {
+			postService.delete(id, getProfile().getId());
+			data = Result.success();
+		} catch (Exception e) {
+			data = Result.failure(e.getMessage());
 		}
 		return data;
 	}

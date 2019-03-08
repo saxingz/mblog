@@ -81,14 +81,13 @@ public class UploadController extends BaseController {
             String path;
             if (crop == 1) {
                 int width = ServletRequestUtils.getIntParameter(request, "width", 360);
-                int height = ServletRequestUtils.getIntParameter(request, "height", 240);
+                int height = ServletRequestUtils.getIntParameter(request, "height", 200);
                 path = storageFactory.get().storeScale(file, Consts.thumbnailPath, width, height);
             } else {
                 path = storageFactory.get().storeScale(file, Consts.thumbnailPath, size);
             }
             result.ok(errorInfo.get("SUCCESS"));
             result.setName(fileName);
-            result.setType(getSuffix(fileName));
             result.setPath(path);
             result.setSize(file.getSize());
 
@@ -123,11 +122,6 @@ public class UploadController extends BaseController {
          * 文件大小
          */
         private long size;
-
-        /**
-         * 文件类型
-         */
-        private String type;
 
         /**
          * 文件存放路径
@@ -176,14 +170,6 @@ public class UploadController extends BaseController {
 
         public void setSize(long size) {
             this.size = size;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
         }
 
         public String getPath() {

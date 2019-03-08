@@ -1,14 +1,14 @@
-<#include "/classic/utils/ui.ftl"/>
+<#include "/classic/inc/layout.ftl"/>
 
 <@layout "搜索:" + kw>
 
 <div class="row streams">
     <div class="col-xs-12 col-md-9 side-left">
         <div class="posts ">
-            <ul class="ajax-load-box posts-con">
-                <li class="ajax-load-con content">
+            <ul class="posts-list">
+                <li class="content">
                     <div class="content-box posts-aside">
-                        <div class="posts-default-content">搜索: ${kw} 共 ${results.totalElements} 个结果.</div>
+                        <div class="posts-item">搜索: ${kw} 共 ${results.totalElements} 个结果.</div>
                     </div>
                 </li>
                 <#include "/classic/inc/posts_item.ftl"/>
@@ -16,16 +16,16 @@
                     <@posts_item row false/>
                 </#list>
                 <#if !results?? || results.content?size == 0>
-                    <li class="ajax-load-con content">
+                    <li class="content">
                         <div class="content-box posts-aside">
-                            <div class="posts-default-content">该目录下还没有内容!</div>
+                            <div class="posts-item">该目录下还没有内容!</div>
                         </div>
                     </li>
                 </#if>
             </ul>
         </div>
         <div class="text-center">
-            <@pager request.requestURI, results, 5/>
+            <@utils.pager request.requestURI, results, 5/>
         </div>
     </div>
     <div class="col-xs-12 col-md-3 side-right">

@@ -11,9 +11,6 @@
 define(function(require, exports, module) {
 	J = jQuery;
 	require('tagsinput');
-    require('validation');
-    require('validation-additional');
-    require('validation-localization');
 
 	var PostView = function () {};
 	
@@ -33,6 +30,12 @@ define(function(require, exports, module) {
         	that.bindTagit();
         	that.bindValidate();
         	that.bindUpload();
+
+            $('button[event="post_submit"]').click(function () {
+                var status = $(this).data('status');
+                $("input[name='status']").val(status);
+                $("#submitForm").submit();
+            });
         },
         
         bindTagit : function () {
@@ -44,7 +47,7 @@ define(function(require, exports, module) {
         
         bindUpload : function () {
             $('#upload_btn').change(function(){
-                $(this).upload(_MTONS.BASE_PATH + '/post/upload?crop=1&width=360&height=240', function(data){
+                $(this).upload(_MTONS.BASE_PATH + '/post/upload?crop=1', function(data){
                     if (data.status == 200) {
                         var path = data.path;
                         $("#thumbnail_image").css("background", "url(" + path + ") no-repeat scroll center 0 rgba(0, 0, 0, 0)");
@@ -55,35 +58,47 @@ define(function(require, exports, module) {
         },
 
         bindValidate: function () {
-            $("#submitForm").submit(function () {
-                tinyMCE.triggerSave();
-            }).validate({
-                ignore: "",
-                rules: {
-                    title: 'required',
-                    channelId: 'required',
-                    content: {
-                        required: true,
-                        check_editor: true
+            require.async(['validation', 'validation-additional'], function () {
+                $("#submitForm").submit(function () {
+                    if (typeof tinyMCE == "function") {
+                        tinyMCE.triggerSave();
                     }
-                },
-                errorElement: "em",
-                errorPlacement: function (error, element) {
-                    error.addClass("help-block");
-                    if (element.prop("type") === "checkbox") {
-                        error.insertAfter(element.parent("label"));
-                    } else if (element.is("textarea")) {
-                        error.insertAfter(element.next());
-                    } else {
-                        error.insertAfter(element);
+                }).validate({
+                    ignore: "",
+                    rules: {
+                        title: 'required',
+                        channelId: 'required',
+                        content: {
+                            required: true,
+                            check_editor: true
+                        }
+                    },
+                    messages: {
+                        title: '请输入标题',
+                        channelId: '请选择栏目',
+                        content: {
+                            required: '内容不能为空',
+                            check_editor: '内容不能为空'
+                        }
+                    },
+                    errorElement: "p",
+                    errorPlacement: function (error, element) {
+                        error.addClass("help-block");
+                        if (element.prop("type") === "checkbox") {
+                            error.insertAfter(element.parent("label"));
+                        } else if (element.is("textarea")) {
+                            error.insertAfter(element.next());
+                        } else {
+                            error.insertAfter(element);
+                        }
+                    },
+                    highlight: function (element, errorClass, validClass) {
+                        $(element).closest("div").addClass("has-error").removeClass("has-success");
+                    },
+                    unhighlight: function (element, errorClass, validClass) {
+                        $(element).closest("div").addClass("has-success").removeClass("has-error");
                     }
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).closest("div").addClass("has-error").removeClass("has-success");
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).closest("div").addClass("has-success").removeClass("has-error");
-                }
+                });
             });
         }
     };
