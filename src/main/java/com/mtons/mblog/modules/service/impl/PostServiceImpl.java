@@ -10,8 +10,10 @@
 package com.mtons.mblog.modules.service.impl;
 
 import com.mtons.mblog.base.lang.Consts;
-import com.mtons.mblog.base.lang.EntityStatus;
+import com.mtons.mblog.base.utils.BeanMapUtils;
+import com.mtons.mblog.base.utils.MarkdownUtils;
 import com.mtons.mblog.base.utils.PreviewTextUtils;
+import com.mtons.mblog.modules.aspect.PostStatusFilter;
 import com.mtons.mblog.modules.data.PostVO;
 import com.mtons.mblog.modules.data.UserVO;
 import com.mtons.mblog.modules.entity.Channel;
@@ -21,7 +23,6 @@ import com.mtons.mblog.modules.event.PostUpdateEvent;
 import com.mtons.mblog.modules.repository.PostAttributeRepository;
 import com.mtons.mblog.modules.repository.PostRepository;
 import com.mtons.mblog.modules.service.*;
-import com.mtons.mblog.base.utils.BeanMapUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -60,6 +61,7 @@ public class PostServiceImpl implements PostService {
 	private ApplicationContext applicationContext;
 
 	@Override
+	@PostStatusFilter
 	public Page<PostVO> paging(Pageable pageable, int channelId, Set<Integer> excludeChannelIds, String ord) {
 		Page<Post> page = postRepository.findAll((root, query, builder) -> {
 
@@ -126,22 +128,26 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
+	@PostStatusFilter
 	public Page<PostVO> pagingByAuthorId(Pageable pageable, long userId) {
 		Page<Post> page = postRepository.findAllByAuthorId(pageable, userId);
 		return new PageImpl<>(toPosts(page.getContent()), pageable, page.getTotalElements());
 	}
 
 	@Override
+	@PostStatusFilter
 	public List<PostVO> findLatests(int maxResults) {
 		return find("created", maxResults).stream().map(BeanMapUtils::copy).collect(Collectors.toList());
 	}
 	
 	@Override
+	@PostStatusFilter
 	public List<PostVO> findHottests(int maxResults) {
 		return find("views", maxResults).stream().map(BeanMapUtils::copy).collect(Collectors.toList());
 	}
 	
 	@Override
+	@PostStatusFilter
 	public Map<Long, PostVO> findMapByIds(Set<Long> ids) {
 		if (ids == null || ids.isEmpty()) {
 			return Collections.emptyMap();
@@ -170,11 +176,11 @@ public class PostServiceImpl implements PostService {
 		BeanUtils.copyProperties(post, po);
 
 		po.setCreated(new Date());
-		po.setStatus(EntityStatus.ENABLED);
+		po.setStatus(post.getStatus());
 
 		// 处理摘要
 		if (StringUtils.isBlank(post.getSummary())) {
-			po.setSummary(trimSummary(post.getContent()));
+			po.setSummary(trimSummary(post.getEditor(), post.getContent()));
 		} else {
 			po.setSummary(post.getSummary());
 		}
@@ -184,6 +190,7 @@ public class PostServiceImpl implements PostService {
 
 		PostAttribute attr = new PostAttribute();
 		attr.setContent(post.getContent());
+		attr.setEditor(post.getEditor());
 		attr.setId(po.getId());
 		postAttributeRepository.save(attr);
 
@@ -202,6 +209,7 @@ public class PostServiceImpl implements PostService {
 
 			PostAttribute attr = postAttributeRepository.findById(d.getId()).get();
 			d.setContent(attr.getContent());
+			d.setEditor(attr.getEditor());
 			return d;
 		}
 		return null;
@@ -221,10 +229,11 @@ public class PostServiceImpl implements PostService {
 			po.setTitle(p.getTitle());//标题
 			po.setChannelId(p.getChannelId());
 			po.setThumbnail(p.getThumbnail());
+			po.setStatus(p.getStatus());
 
 			// 处理摘要
 			if (StringUtils.isBlank(p.getSummary())) {
-				po.setSummary(trimSummary(p.getContent()));
+				po.setSummary(trimSummary(p.getEditor(), p.getContent()));
 			} else {
 				po.setSummary(p.getSummary());
 			}
@@ -234,6 +243,7 @@ public class PostServiceImpl implements PostService {
 			// 保存扩展
 			PostAttribute attr = new PostAttribute();
 			attr.setContent(p.getContent());
+			attr.setEditor(p.getEditor());
 			attr.setId(po.getId());
 			postAttributeRepository.save(attr);
 
@@ -317,13 +327,30 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
+	@PostStatusFilter
 	public long count() {
 		return postRepository.count();
 	}
 
+	@PostStatusFilter
 	private List<Post> find(String orderBy, int size) {
 		Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, orderBy));
-		Page<Post> page = postRepository.findAll(pageable);
+
+		Set<Integer> excludeChannelIds = new HashSet<>();
+
+		List<Channel> channels = channelService.findAll(Consts.STATUS_CLOSED);
+		if (channels != null) {
+			channels.forEach((c) -> excludeChannelIds.add(c.getId()));
+		}
+
+		Page<Post> page = postRepository.findAll((root, query, builder) -> {
+			Predicate predicate = builder.conjunction();
+			if (excludeChannelIds.size() > 0) {
+				predicate.getExpressions().add(
+						builder.not(root.get("channelId").in(excludeChannelIds)));
+			}
+			return predicate;
+		}, pageable);
 		return page.getContent();
 	}
 
@@ -332,8 +359,12 @@ public class PostServiceImpl implements PostService {
 	 * @param text
 	 * @return
 	 */
-	private String trimSummary(String text){
-		return PreviewTextUtils.getText(text, 126);
+	private String trimSummary(String editor, final String text){
+		if (Consts.EDITOR_MARKDOWN.endsWith(editor)) {
+			return PreviewTextUtils.getText(MarkdownUtils.renderMarkdown(text), 126);
+		} else {
+			return PreviewTextUtils.getText(text, 126);
+		}
 	}
 
 	private List<PostVO> toPosts(List<Post> posts) {

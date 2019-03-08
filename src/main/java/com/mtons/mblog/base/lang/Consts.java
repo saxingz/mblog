@@ -31,7 +31,7 @@ public interface Consts {
 
 	String ROLE_ADMIN = "admin";
 
-	int PAGE_DEFAULT_SIZE = 16;
+	int PAGE_DEFAULT_SIZE = 10;
 
 	int IDENTITY_STEP = 1; // 自增步进
 
@@ -117,4 +117,6 @@ public interface Consts {
 	String GITHUB_SECRET_KEY = "github_secret_key";//github应用SECRET_KEY
 
 	String EMAIL_TEMPLATE_CODE = "email_code.ftl";
+
+	String EDITOR_MARKDOWN = "markdown";
 }

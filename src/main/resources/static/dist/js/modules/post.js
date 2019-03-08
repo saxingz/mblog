@@ -11,9 +11,6 @@
 define(function(require, exports, module) {
 	J = jQuery;
 	require('tagsinput');
-    require('validation');
-    require('validation-additional');
-    require('validation-localization');
 
 	var PostView = function () {};
 	
@@ -33,6 +30,12 @@ define(function(require, exports, module) {
         	that.bindTagit();
         	that.bindValidate();
         	that.bindUpload();
+
+            $('button[event="post_submit"]').click(function () {
+                var status = $(this).data('status');
+                $("input[name='status']").val(status);
+                $("#submitForm").submit();
+            });
         },
         
         bindTagit : function () {
@@ -56,7 +59,9 @@ define(function(require, exports, module) {
 
         bindValidate: function () {
             $("#submitForm").submit(function () {
-                tinyMCE.triggerSave();
+                if (typeof tinyMCE == "function") {
+                    tinyMCE.triggerSave();
+                }
             }).validate({
                 ignore: "",
                 rules: {
@@ -67,7 +72,15 @@ define(function(require, exports, module) {
                         check_editor: true
                     }
                 },
-                errorElement: "em",
+                messages: {
+                    title: '请输入标题',
+                    channelId: '请选择栏目',
+                    content: {
+                        required: '内容不能为空',
+                        check_editor: '内容不能为空'
+                    }
+                },
+                errorElement: "p",
                 errorPlacement: function (error, element) {
                     error.addClass("help-block");
                     if (element.prop("type") === "checkbox") {
@@ -85,11 +98,13 @@ define(function(require, exports, module) {
                     $(element).closest("div").addClass("has-success").removeClass("has-error");
                 }
             });
+
         }
     };
 	
 	exports.init = function () {
-		new PostView().init();
+        require.async(['validation', 'validation-additional'], function () {
+		    new PostView().init();
+        });
 	}
-	
 });

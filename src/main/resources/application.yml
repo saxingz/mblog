@@ -63,7 +63,7 @@ shiro:
 
 # site.options.theme: [default|classic]
 site:
-    version: 3.2.0
+    version: 3.5.0
     location: ${user.dir}
     controls:
         # 注册开关
@@ -79,4 +79,5 @@ site:
         site_logo: ${server.servlet.context-path}/dist/images/logo/logo.png
         site_favicon: ${server.servlet.context-path}/dist/images/logo/m.png
         storage_max_width: 800
-        storeage_limit_size: 2
+        storeage_limit_size: 2,
+        editor: markdown
