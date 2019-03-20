@@ -32,7 +32,7 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">Copyright</label>
         <div class="col-sm-6">
-            <input type="text" name="site_copyright" class="form-control" value="${options['site_copyright']}" placeholder="示例: Copyright © Mtons">
+            <input type="text" name="site_copyright" class="form-control" value="${options['site_copyright']}" placeholder="示例: Copyright © Saxing">
         </div>
     </div>
     <div class="form-group">
