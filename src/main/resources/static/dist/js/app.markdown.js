@@ -1,4 +1,5 @@
 var MdEditor = {
+    editorId: null,
     format: {
         undo: function undo(editor) {
             editor.undo();
@@ -153,23 +154,28 @@ var MdEditor = {
                             layer.alert(result.message);
                         }
                     }
-                })
+                });
             });
 
             input_f.click();
         },
 
         setPreMode: function setPreMode(element, mode, editor) {
-            var preview = $('.editor-preview');
-			$('li[event="premode"]').removeClass('active');
+			$('button[event=premode].active').removeClass('active');
 			element.addClass('active');
 			$('.editor-container').removeClass('liveMode editMode previewMode').addClass(mode);
-            //if (preview.hasClass('show')) {
-            //    element.find('.icon').removeClass('fa-eye-slash').addClass('fa-eye');
-            //} else {
-                element.find('.icon').removeClass('fa-eye').addClass('fa-eye-slash');
-            //}
-            //preview.toggleClass('show');
+        },
+        
+        fullscreen: function (editor) {
+            var $btn = $('button[event=fullscreen]');
+            $btn.toggleClass('active');
+            $('.md-editor').toggleClass('fullscreen');
+            var height = $(window).height() - 37;
+            if ($btn.hasClass('active')) {
+                editor.setSize('auto', height + 'px');
+            } else {
+                editor.setSize('auto', '450px');
+            }
         }
     },
 
@@ -190,14 +196,15 @@ var MdEditor = {
         editor.setSize('auto', '450px');
 
         editor.on('change', function (editor) {
-            $('#content').text(editor.getValue());
+            var $content = $('#content');
+            $content.text(editor.getValue());
             $('.editor-preview').html(marked(editor.getValue()));
         });
 		
 		$('.editor-preview').html(marked($('#content').text()));
 
         // Toolbar click
-        $('div.editor-toolbar').on('click', 'li', function () {
+        $('div.editor-toolbar').on('click', 'button[event]', function () {
             var that = $(this);
             var event = that.attr('event');
             switch (event) {
@@ -246,6 +253,9 @@ var MdEditor = {
                 case 'premode':
 					var mode = that.data('value');
                     MdEditor.format.setPreMode(that, mode, editor);
+                    break;
+                case 'fullscreen':
+                    MdEditor.format.fullscreen(editor);
                     break;
                 default:
                     break;

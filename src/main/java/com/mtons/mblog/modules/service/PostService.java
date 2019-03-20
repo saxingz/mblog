@@ -34,10 +34,9 @@ public interface PostService {
 	 * 
 	 * @param pageable
 	 * @param channelId 分组Id
-	 * @param ord   排序
 	 */
 	@Cacheable
-	Page<PostVO> paging(Pageable pageable, int channelId, Set<Integer> excludeChannelIds, String ord);
+	Page<PostVO> paging(Pageable pageable, int channelId, Set<Integer> excludeChannelIds);
 
 	Page<PostVO> paging4Admin(Pageable pageable, int channelId, String title);
 	
@@ -55,7 +54,7 @@ public interface PostService {
 	 * @return
 	 */
 	@Cacheable
-	List<PostVO> findLatests(int maxResults);
+	List<PostVO> findLatestPosts(int maxResults);
 
 	/**
 	 * 查询热门文章 - 按浏览次数排序
@@ -63,7 +62,7 @@ public interface PostService {
 	 * @return
 	 */
 	@Cacheable
-	List<PostVO> findHottests(int maxResults);
+	List<PostVO> findHottestPosts(int maxResults);
 	
 	/**
 	 * 根据Ids查询

@@ -157,6 +157,10 @@ abbr[data-original-title], abbr[title] {
 
 /* Override bootstrap
 -------------------------------------------------- */
+.form-control, .bootstrap-tagsinput {
+    border-radius: 2px;
+}
+
 .btn-primary {
     color: #fff;
     background-color: #03a9f4;
@@ -1275,16 +1279,27 @@ abbr[data-original-title], abbr[title] {
 
 /* Right
 -------------------------------------------------- */
-.side-right ul.list {
+.widget .panel-heading {
+    text-align: left;
+    padding: 15px 15px 5px;
+    border-bottom: 0;
+}
+
+.widget .panel-title {
+    padding-bottom: 15px;
+    border-bottom: 2px solid #080808;
+}
+
+.widget ul.list {
     margin: 0;
     padding-left: 2px;
 }
 
-.side-right ul.list a, .side-right ul.list a:focus, .side-right ul.list a:hover {
+.widget ul.list a, .widget ul.list a:focus, .widget ul.list a:hover {
     color: #737373;
 }
 
-.side-right ul.list li {
+.widget ul.list li {
     margin-bottom: 8px;
     line-height: 22px;
     display: inline-block;
@@ -1297,17 +1312,6 @@ abbr[data-original-title], abbr[title] {
 
 .side-right ul.list li:last-child {
     margin-bottom: 0;
-}
-
-.side-right .panel .panel-heading {
-    text-align: left;
-    padding: 15px 15px 5px;
-    border-bottom: 0;
-}
-
-.side-right .panel-title {
-    padding-bottom: 15px;
-    border-bottom: 2px solid #080808;
 }
 
 /* User

@@ -60,6 +60,10 @@ shiro:
     rememberMeManager:
         cookie:
             maxAge: 604800
+logging:
+    level:
+        org.springframework: WARN
+        org.hibernate: WARN
 
 # site.options.theme: [default|classic]
 site:
@@ -79,5 +83,7 @@ site:
         site_logo: ${server.servlet.context-path}/dist/images/logo/logo.png
         site_favicon: ${server.servlet.context-path}/dist/images/logo/m.png
         storage_max_width: 800
-        storeage_limit_size: 2,
+        storage_limit_size: 2
         editor: markdown
+        thumbnail_channel_size: 200x112
+        thumbnail_post_size: 360x200
