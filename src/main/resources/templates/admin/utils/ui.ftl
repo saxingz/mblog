@@ -126,7 +126,7 @@
         <!-- To the right -->
         <div class="pull-right hidden-xs">${site.version}</div>
         <!-- Default to the left -->
-        <strong>Copyright &copy; 2019 <a href="#">mtons</a>.</strong> All rights reserved.
+        <strong>Copyright &copy; 2019 <a href="#">saxing</a>.</strong> All rights reserved.
     </footer>
 </body>
 </html>
