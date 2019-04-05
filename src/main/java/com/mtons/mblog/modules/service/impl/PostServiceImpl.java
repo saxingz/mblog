@@ -10,20 +10,19 @@
 package com.mtons.mblog.modules.service.impl;
 
 import com.mtons.mblog.base.lang.Consts;
-import com.mtons.mblog.base.utils.BeanMapUtils;
-import com.mtons.mblog.base.utils.MarkdownUtils;
-import com.mtons.mblog.base.utils.PreviewTextUtils;
+import com.mtons.mblog.base.utils.*;
 import com.mtons.mblog.modules.aspect.PostStatusFilter;
 import com.mtons.mblog.modules.data.PostVO;
 import com.mtons.mblog.modules.data.UserVO;
-import com.mtons.mblog.modules.entity.Channel;
-import com.mtons.mblog.modules.entity.Post;
-import com.mtons.mblog.modules.entity.PostAttribute;
+import com.mtons.mblog.modules.entity.*;
 import com.mtons.mblog.modules.event.PostUpdateEvent;
+import com.mtons.mblog.modules.repository.ResourceRepository;
 import com.mtons.mblog.modules.repository.PostAttributeRepository;
+import com.mtons.mblog.modules.repository.PostResourceRepository;
 import com.mtons.mblog.modules.repository.PostRepository;
 import com.mtons.mblog.modules.service.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,8 @@ import org.springframework.util.Assert;
 
 import javax.persistence.criteria.Predicate;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +59,10 @@ public class PostServiceImpl implements PostService {
 	private TagService tagService;
 	@Autowired
 	private ApplicationContext applicationContext;
+	@Autowired
+	private PostResourceRepository postResourceRepository;
+	@Autowired
+	private ResourceRepository resourceRepository;
 
 	@Override
 	@PostStatusFilter
@@ -169,6 +174,7 @@ public class PostServiceImpl implements PostService {
 		attr.setId(po.getId());
 		postAttributeRepository.save(attr);
 
+		countResource(po.getId(), null,  attr.getContent());
 		onPushEvent(po, PostUpdateEvent.ACTION_PUBLISH);
 		return po.getId();
 	}
@@ -216,6 +222,11 @@ public class PostServiceImpl implements PostService {
 			po.setTags(p.getTags());//标签
 
 			// 保存扩展
+			Optional<PostAttribute> attributeOptional = postAttributeRepository.findById(po.getId());
+			String originContent = "";
+			if (attributeOptional.isPresent()){
+				originContent = attributeOptional.get().getContent();
+			}
 			PostAttribute attr = new PostAttribute();
 			attr.setContent(p.getContent());
 			attr.setEditor(p.getEditor());
@@ -223,6 +234,8 @@ public class PostServiceImpl implements PostService {
 			postAttributeRepository.save(attr);
 
 			tagService.batchUpdate(po.getTags(), po.getId());
+
+			countResource(po.getId(), originContent, p.getContent());
 		}
 	}
 
@@ -377,5 +390,56 @@ public class PostServiceImpl implements PostService {
 		event.setUserId(post.getAuthorId());
 		event.setAction(action);
 		applicationContext.publishEvent(event);
+	}
+
+	public void countResource(Long postId, String originContent, String newContent){
+	    if (StringUtils.isEmpty(originContent)){
+	        originContent = "";
+        }
+        if (StringUtils.isEmpty(newContent)){
+	        newContent = "";
+        }
+
+		Set<String> exists = extractImageMd5(originContent);
+		Set<String> news = extractImageMd5(newContent);
+
+        List<String> adds = ListUtils.removeAll(news, exists);
+		List<String> deleteds = ListUtils.removeAll(exists, news);
+
+		if (adds.size() > 0) {
+			List<Resource> resources = resourceRepository.findByMd5In(adds);
+
+			List<PostResource> prs = resources.stream().map(n -> {
+				PostResource pr = new PostResource();
+				pr.setResourceId(n.getId());
+				pr.setPostId(postId);
+				pr.setPath(n.getPath());
+				return pr;
+			}).collect(Collectors.toList());
+			postResourceRepository.saveAll(prs);
+
+			resourceRepository.updateAmount(adds, 1);
+		}
+
+		if (deleteds.size() > 0) {
+			List<Resource> resources = resourceRepository.findByMd5In(deleteds);
+			List<Long> rids = resources.stream().map(Resource::getId).collect(Collectors.toList());
+			postResourceRepository.deleteByPostIdAndResourceIdIn(postId, rids);
+			resourceRepository.updateAmount(deleteds, -1);
+		}
+	}
+
+	public Set<String> extractImageMd5(String text) {
+		Pattern pattern = Pattern.compile("(?<=/_signature/)[^/]+?jpg");
+
+		Set<String> md5s = new HashSet<>();
+
+		Matcher originMatcher = pattern.matcher(text);
+		while (originMatcher.find()) {
+			String key = originMatcher.group();
+			md5s.add(key.substring(0, key.lastIndexOf(".")));
+		}
+
+		return md5s;
 	}
 }
