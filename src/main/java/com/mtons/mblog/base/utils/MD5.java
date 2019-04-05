@@ -51,22 +51,4 @@ public class MD5 {
 		return md5(salt + md5(input));
 	}
 
-	/**
-	 * 文件md5计算
-	 *
-	 * @param bytes
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 */
-	public static String md5File(byte[] bytes)  {
-		byte[] code = new byte[0];
-		try {
-			code = MessageDigest.getInstance("md5").digest(bytes);
-		} catch (NoSuchAlgorithmException e) {
-			return "";
-		}
-		BigInteger bi = new BigInteger(code);
-		return bi.abs().toString(32).toUpperCase();
-	}
-
 }
