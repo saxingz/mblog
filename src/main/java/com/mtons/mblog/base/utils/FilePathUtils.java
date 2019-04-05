@@ -42,7 +42,7 @@ public class FilePathUtils {
 	 */
 	public static String wholePathName(String originalFilename, Long id) {
 		StringBuilder builder = new StringBuilder(52);
-		builder.append(Consts.PIC_MARK);
+		builder.append(Consts.IMAGE_MARK);
 		builder.append(id);
 		builder.append(FileKit.getSuffix(originalFilename));
 		return builder.toString();

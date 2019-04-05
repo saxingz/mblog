@@ -22,7 +22,7 @@ public interface Consts {
 	/**
 	 * 图片标记
 	 */
-	public static final String PIC_MARK = "/809c82722ec1492288a4bb4c50955b50/";
+	public static final String IMAGE_MARK = "/809c82722ec1492288a4bb4c50955b50/";
 
 	/**
 	 * 默认头像

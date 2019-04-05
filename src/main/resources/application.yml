@@ -6,6 +6,8 @@ server:
         worker-threads: 32
         buffer-size: 1024
         directBuffers: true
+    servlet:
+      context-path: /blog
 spring:
     profiles:
         active: @profileActive@

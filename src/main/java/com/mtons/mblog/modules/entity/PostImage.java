@@ -11,10 +11,10 @@ import java.io.Serializable;
  * @author saxing 2019/4/3 22:39
  */
 @Entity
-@Table(name = "mto_post_pic", indexes = {
+@Table(name = "mto_post_image", indexes = {
         @Index(columnList = "post_id")
 })
-public class PostPic implements Serializable {
+public class PostImage implements Serializable {
     private static final long serialVersionUID = -2343406058301647253L;
 
     @Id
@@ -23,8 +23,8 @@ public class PostPic implements Serializable {
     @Column(name = "post_id", columnDefinition = "bigint(20) NOT NULL")
     private long postId;
 
-    @Column(name = "pic_id", columnDefinition = "bigint(20) NOT NULL")
-    private long picId;
+    @Column(name = "image_id", columnDefinition = "bigint(20) NOT NULL")
+    private long imageId;
 
     @Column(name = "path", columnDefinition = "varchar(255) NOT NULL DEFAULT ''")
     private String path;
@@ -48,14 +48,6 @@ public class PostPic implements Serializable {
         this.postId = postId;
     }
 
-    public long getPicId() {
-        return picId;
-    }
-
-    public void setPicId(long picId) {
-        this.picId = picId;
-    }
-
     public int getSort() {
         return sort;
     }
@@ -70,5 +62,13 @@ public class PostPic implements Serializable {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public long getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(long imageId) {
+        this.imageId = imageId;
     }
 }

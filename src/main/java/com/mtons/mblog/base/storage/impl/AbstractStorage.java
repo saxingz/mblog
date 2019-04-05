@@ -13,11 +13,13 @@ import com.mtons.mblog.base.lang.MtonsException;
 import com.mtons.mblog.base.storage.Storage;
 import com.mtons.mblog.base.utils.*;
 import com.mtons.mblog.config.SiteOptions;
-import com.mtons.mblog.modules.entity.Pic;
-import com.mtons.mblog.modules.repository.PicRepository;
+import com.mtons.mblog.modules.entity.Image;
+import com.mtons.mblog.modules.repository.ImageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
 
 /**
  * @author langhsu
@@ -28,7 +30,7 @@ public abstract class AbstractStorage implements Storage {
     @Autowired
     protected SiteOptions options;
     @Autowired
-    protected PicRepository picRepository;
+    protected ImageRepository imageRepository;
 
     protected void validateFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
@@ -63,19 +65,21 @@ public abstract class AbstractStorage implements Storage {
     public String writeToStore(byte[] bytes, String src, String originalFilename) throws Exception {
         String md5 = MD5.md5File(bytes);
         long id = IdUtils.getId();
-        Pic pic = picRepository.findByMd5(md5);
-        if (pic != null){
-            return pic.getPath();
+        Image image = imageRepository.findByMd5(md5);
+        if (image != null){
+            return image.getPath();
         }
         String path = FilePathUtils.wholePathName(src, originalFilename, id);
         writeToStore(bytes, writeToStore(bytes, path));
         // 图片入库
-        pic = new Pic();
-        pic.setId(id);
-        pic.setMd5(md5);
-        pic.setPath(path);
-        pic.setAmount(0);
-        picRepository.save(pic);
+        image = new Image();
+        image.setId(id);
+        image.setMd5(md5);
+        image.setPath(path);
+        image.setAmount(0);
+        image.setCreateTime(LocalDateTime.now());
+        image.setUpdateTime(LocalDateTime.now());
+        imageRepository.save(image);
         return path;
     }
 

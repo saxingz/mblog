@@ -1,8 +1,9 @@
 package com.mtons.mblog.modules.repository;
 
-import com.mtons.mblog.modules.entity.PostPic;
+import com.mtons.mblog.modules.entity.PostImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -11,10 +12,11 @@ import java.util.List;
  *
  * @author saxing 2019/4/5 8:09
  */
-public interface PostPicRepository extends JpaRepository<PostPic, Long>, JpaSpecificationExecutor<PostPic> {
+public interface PostImageRepository extends JpaRepository<PostImage, Long>, JpaSpecificationExecutor<PostImage> {
 
+    @Transactional
     int deleteByPostId(long postId);
 
-    List<PostPic> findByPicId(long picId);
+    List<PostImage> findByImageId(long imageId);
 
 }

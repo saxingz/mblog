@@ -1,7 +1,6 @@
-package com.mtons.mblog.modules.service.impl;
+package com.mtons.mblog.modules.task;
 
 import com.mtons.mblog.BootApplication;
-import com.mtons.mblog.modules.service.PostService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +16,14 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BootApplication.class)
-public class PostServiceImplTest {
+public class JobTaskTest {
 
     @Autowired
-    PostServiceImpl postService;
+    JobTask jobTask;
 
     @Test
-    public void cleanPostPic() {
-        postService.cleanPostImage(15);
+    public void testA() {
+        jobTask.testA();
+        jobTask.del3DayAgoPic();
     }
 }

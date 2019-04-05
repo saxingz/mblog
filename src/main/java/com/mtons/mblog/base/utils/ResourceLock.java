@@ -33,8 +33,4 @@ public class ResourceLock {
         return "POST_OPERATE_{postId}".replace("{postId}", String.valueOf(postId));
     }
 
-    public static String getPicKey(Long picId){
-        return "PIC_OPERATE_{pic}".replace("{pic}", String.valueOf(picId));
-    }
-
 }

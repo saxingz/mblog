@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
  * @author saxing 2019/4/3 21:24
  */
 @Entity
-@Table(name = "mto_pic",
+@Table(name = "mto_image",
         uniqueConstraints = {@UniqueConstraint(name = "md5key", columnNames = {"md5"})}
 )
-public class Pic implements Serializable {
+public class Image implements Serializable {
     private static final long serialVersionUID = -2263990565349962964L;
 
     @Id
@@ -28,10 +28,10 @@ public class Pic implements Serializable {
     @Column(name = "amount", columnDefinition = "bigint(20) NOT NULL DEFAULT '0'")
     private long amount;
 
-    @Column(name = "create_time")
+    @Column(name = "create_time", columnDefinition = "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createTime;
 
-    @Column(name = "update_time")
+    @Column(name = "update_time", columnDefinition = "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updateTime;
 
     public long getId() {
