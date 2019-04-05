@@ -21,8 +21,4 @@ rebel.xml
 
 *.db
 
-<<<<<<< HEAD
-/post/
-=======
->>>>>>> 2c291ef499c5b5559599de409bb37e13f4af78dd
 !/src/main/java/com/mtons/mblog/base/storage/
